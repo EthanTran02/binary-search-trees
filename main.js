@@ -6,7 +6,7 @@ class Node {
   }
 }
 
-class Tree {
+export class Tree {
   constructor(array) {
     const UniqueSortedArr = [...new Set(array)].sort((a, b) => a - b);
     this.root = this.buildTree(UniqueSortedArr, 0, UniqueSortedArr.length - 1);
@@ -186,10 +186,23 @@ class Tree {
 
     return this.calculateDepth(this.root, node, 0);
   }
-}
 
-//test case
-const test = new Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
-console.log(test.depth(4));
-//display tree for debuging
-test.prettyPrint();
+  isBalanced(node = this.root) {
+    if (node === null) return true;
+
+    let leftHeight = node.left ? this.height(node.left.data) : -1;
+    let rightHeight = node.right ? this.height(node.right.data) : -1;
+
+    if (Math.abs(leftHeight - rightHeight) > 1) {
+      return false;
+    }
+
+    return this.isBalanced(node.left) && this.isBalanced(node.right);
+  }
+
+  reBalance() {
+    let arr = [];
+    this.inOrder((item) => arr.push(item));
+    this.root = this.buildTree(arr, 0, arr.length - 1);
+  }
+}
