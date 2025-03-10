@@ -49,6 +49,25 @@ class Tree {
     return node;
   }
 
+  calculateHeight(node) {
+    if (node === null) return -1;
+
+    const leftNode = this.calculateHeight(node.left);
+    const rightNode = this.calculateHeight(node.right);
+
+    return 1 + Math.max(leftNode, rightNode);
+  }
+
+  calculateDepth(currentNode, taget, depthSoFar) {
+    if (currentNode === taget) return depthSoFar;
+
+    if (taget.data < currentNode.data) {
+      return this.calculateDepth(currentNode.left, taget, depthSoFar + 1);
+    } else {
+      return this.calculateDepth(currentNode.right, taget, depthSoFar + 1);
+    }
+  }
+
   // ---------- public ----------
 
   insert(value, node = this.root) {
@@ -102,9 +121,9 @@ class Tree {
     }
 
     if (value < node.data) {
-      return (node.left = this.find(value, node.left));
+      return this.find(value, node.left);
     } else if (value > node.data) {
-      return (node.right = this.find(value, node.right));
+      return this.find(value, node.right);
     }
   }
 
@@ -153,10 +172,24 @@ class Tree {
     this.postOrder(callback, node.right);
     callback(node.data);
   }
+
+  height(value) {
+    const node = this.find(value);
+    if (!node) return null;
+
+    return this.calculateHeight(node);
+  }
+
+  depth(value) {
+    const node = this.find(value);
+    if (!node) return -1;
+
+    return this.calculateDepth(this.root, node, 0);
+  }
 }
 
 //test case
 const test = new Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
-
+console.log(test.depth(4));
 //display tree for debuging
 test.prettyPrint();
